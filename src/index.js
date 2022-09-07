@@ -4,7 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Polyline } from 'react-leaflet'
+import Map from './Map.js';
+import "./salida.png";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,6 +21,7 @@ function Connect () {
 
   const [flight_id_land, setflight_id_land] = useState("");
   const [vuelardos, setvuelardos] = useState([]);
+  const [positions, setpositions] = useState([]);
 
   client.onopen = () => {
     console.log('Websocket Client Connected');
@@ -66,7 +69,8 @@ function Connect () {
       }
 
       if (mensaje.type === "plane") {
-        const plane = mensaje.plane;
+        const javion = mensaje.plane;
+        setpositions({... positions, [javion.flight_id]: [javion.position.lat, javion.position.long]})
         console.log("plane"); 
       }
 
@@ -97,6 +101,12 @@ function Connect () {
 
   }, []);
 
+  const fillBlueOptions = { fillColor: 'blue' }
+  const blackOptions = { color: 'black' }
+  const limeOptions = { color: 'lime' }
+  const purpleOptions = { color: 'purple' }
+  const redOptions = { color: 'red' }
+
   return(
     <>
       <div className='map'>
@@ -105,23 +115,65 @@ function Connect () {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright%22%3EOpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker position={[0,0]}>
-            <Popup>
-                {flight_id_land} <br />
-            </Popup>
-          </Marker>
 
-          {console.log(vuelardos)}
-
-          {/* Aeropuertos*/}
+          {/* Aeropuertos de Salida*/}
           {Object.keys(vuelardos).map((key) => {
-
             const avion = vuelardos[key];
-            const data = [avion.departure.location.lat, avion.departure.location.long];
-            return(
-              <Marker position={data}>
-              </Marker> 
-            )})}
+            const aeropuertos_salida = [avion.departure.location.lat, avion.departure.location.long];
+            return (
+              <Marker position={aeropuertos_salida} iconUrl={"salida.png"}>
+                <Popup>
+                  Aeropuerto de Salida: {avion.departure.name} <br />
+                  Vuelo: {avion.id} <br />
+                  Pais: {avion.departure.city.country.name}<br />
+                  Ciudad: {avion.departure.city.name}<br />
+                  <br />
+                </Popup>
+              </Marker>
+            )
+          })}
+
+
+          {/* Aeropuertos de Llegada*/}
+          {Object.keys(vuelardos).map((key) => {
+            const avion = vuelardos[key];
+            const aeropuertos_llegada = [avion.destination.location.lat, avion.destination.location.long];
+            return (
+              <Marker position={aeropuertos_llegada}>
+                <Popup>
+                  Aeropuerto de Llegada: {avion.destination.name} <br />
+                  Vuelo: {avion.id} <br />
+                  Pais: {avion.destination.city.country.name}<br />
+                  Ciudad: {avion.destination.city.name}<br />
+                </Popup>
+              </Marker>
+            )
+          })}
+          
+          {/* Aviones*/}
+          {Object.keys(positions).map((key) => {
+            const ubi = positions[key];
+            return (
+              <CircleMarker center={ubi} radius={2} pathOptions={redOptions}>
+                <Popup>
+                  Avioncitu: {positions.id} <br />
+                </Popup>
+              </CircleMarker>
+            )
+          })}
+
+          {/* Aviones*/}
+          {Object.keys(vuelardos).map((key) => {
+            const avion = vuelardos[key];
+            const trayecto = [
+              [avion.departure.location.lat, avion.departure.location.long],
+              [avion.destination.location.lat, avion.destination.location.long],
+            ];
+            return (
+              <Polyline pathOptions={limeOptions} positions={trayecto} />
+            )
+          })}
+
 
       </MapContainer>
   </div>

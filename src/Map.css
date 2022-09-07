@@ -1,0 +1,11 @@
+.map {
+    height: 500px;
+    width: 500px;
+    position: relative;
+    align-self: center;
+}
+
+.leaflet-container {
+    width: 900px;
+    height: 400px;
+}

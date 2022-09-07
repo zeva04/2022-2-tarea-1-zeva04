@@ -1,0 +1,18 @@
+table,
+table td {
+  border: 1px solid #cccccc;
+}
+
+tbody {
+    height: 400px;
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+td {
+  height: 50px;
+  width: 160px;
+  text-align: center;
+  vertical-align: middle;
+}

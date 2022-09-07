@@ -5,8 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Polyline } from 'react-leaflet'
-import Map from './Map.js';
 import "./salida.png";
+import "./Map.css";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,7 +19,7 @@ const client = new W3CWebSocket("wss://tarea-1.2022-2.tallerdeintegracion.cl/con
 
 function Connect () {
 
-  const [flight_id_land, setflight_id_land] = useState("");
+  //const [flight_id_land, setflight_id_land] = useState("");
   const [vuelardos, setvuelardos] = useState([]);
   const [positions, setpositions] = useState([]);
 
@@ -70,7 +70,7 @@ function Connect () {
 
       if (mensaje.type === "plane") {
         const javion = mensaje.plane;
-        setpositions({... positions, [javion.flight_id]: [javion.position.lat, javion.position.long]})
+        setpositions({...positions, [javion.flight_id]: [javion.position.lat, javion.position.long]})
         console.log("plane"); 
       }
 
@@ -80,9 +80,8 @@ function Connect () {
       }
 
       if (mensaje.type === "landing") {
-        setflight_id_land(mensaje.flight_id) 
-        console.log("LANDING:", flight_id_land); 
-      }
+        //setflight_id_land(mensaje.flight_id) 
+        console.log("LANDING:")}
 
       if (mensaje.type === "crashed") {
         //setflight_id_crash(mensaje.flight_id)
@@ -99,12 +98,12 @@ function Connect () {
 
     };
 
-  }, []);
+  }, [positions]);
 
-  const fillBlueOptions = { fillColor: 'blue' }
-  const blackOptions = { color: 'black' }
+  //const fillBlueOptions = { fillColor: 'blue' }
+  //const blackOptions = { color: 'black' }
+  //const purpleOptions = { color: 'purple' }
   const limeOptions = { color: 'lime' }
-  const purpleOptions = { color: 'purple' }
   const redOptions = { color: 'red' }
 
   return(
@@ -156,13 +155,13 @@ function Connect () {
             return (
               <CircleMarker center={ubi} radius={2} pathOptions={redOptions}>
                 <Popup>
-                  Avioncitu: {positions.id} <br />
+                  Avion: {key} <br />
                 </Popup>
               </CircleMarker>
             )
           })}
 
-          {/* Aviones*/}
+          {/* Trayectos */}
           {Object.keys(vuelardos).map((key) => {
             const avion = vuelardos[key];
             const trayecto = [
@@ -173,7 +172,6 @@ function Connect () {
               <Polyline pathOptions={limeOptions} positions={trayecto} />
             )
           })}
-
 
       </MapContainer>
   </div>

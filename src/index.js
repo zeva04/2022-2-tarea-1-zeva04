@@ -195,22 +195,22 @@ function Connect () {
           })}
       </MapContainer>
   </div>
+      {/* Tabla*/}
+      <table id="mytable">
+        <thread>
+        </thread>
+        <tbody>
+          <td><strong>Flight</strong></td>
+          <td><strong>Origin</strong></td>
+          <td><strong>Destination</strong></td>
+          <td><strong>Departure Date</strong></td>
 
-  <table id = "mytable">
-            <thread>
-            </thread>
-            <tbody>
-                <td><strong>Flight</strong></td>
-                <td><strong>Origin</strong></td>
-                <td><strong>Destination</strong></td>
-                <td><strong>Departure Date</strong></td>
-                          {/* Trayectos */}
           {Object.keys(vuelardos).map((key) => {
             const avion = vuelardos[key];
             return (
               <>
-            <thread>
-            </thread>
+                <thread>
+                </thread>
                 <td>{avion.id}</td>
                 <td>{avion.departure.id}</td>
                 <td>{avion.destination.id}</td>
@@ -218,8 +218,8 @@ function Connect () {
               </>
             )
           })}
-            </tbody>
-        </table>
+        </tbody>
+      </table>
 
     </>
   )

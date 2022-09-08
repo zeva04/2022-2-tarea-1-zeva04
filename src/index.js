@@ -7,6 +7,7 @@ import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Polyline } from 'react-leaflet'
 import "./salida.png";
 import "./Map.css";
+import './Table.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -38,34 +39,12 @@ function Connect () {
     client.onmessage = (message) => {
       const mensaje = JSON.parse(message.data);
 
-      var table = document.getElementById("mytable");
-
       if (mensaje.type === "flights") {
         const vuelos = mensaje.flights
         
         const active_flights = Object.keys(vuelos).map(function(key)
            { return vuelos[key]; });
           setvuelardos(active_flights);
-        
-
-        for (const vuelo in vuelos){
-          // Obtenemos la info que necesitamos
-          const flight_id = vuelos[vuelo].id
-          const departure_id = vuelos[vuelo].departure.id
-          const destination_id = vuelos[vuelo].destination.id
-          const departure_date = vuelos[vuelo].departure_date
-
-          // Agregamos la información en las tablas
-          var row = table.insertRow(0);
-          var cell1 = row.insertCell(0);
-          var cell2 = row.insertCell(1);
-          var cell3 = row.insertCell(2);
-          var cell4 = row.insertCell(3);
-          cell1.innerHTML = flight_id;
-          cell2.innerHTML = departure_id;
-          cell3.innerHTML = destination_id;
-          cell4.innerHTML = departure_date;
-        }
       }
 
       if (mensaje.type === "plane") {
@@ -108,6 +87,7 @@ function Connect () {
 
   return(
     <>
+
       <div className='map'>
       <MapContainer center={[0, 0]} zoom={1} scrollWheelZoom={true}>
           <TileLayer
@@ -213,9 +193,34 @@ function Connect () {
               <Polyline pathOptions={limeOptions} positions={trayecto} />
             )
           })}
-
       </MapContainer>
   </div>
+
+  <table id = "mytable">
+            <thread>
+            </thread>
+            <tbody>
+                <td><strong>Flight</strong></td>
+                <td><strong>Origin</strong></td>
+                <td><strong>Destination</strong></td>
+                <td><strong>Departure Date</strong></td>
+                          {/* Trayectos */}
+          {Object.keys(vuelardos).map((key) => {
+            const avion = vuelardos[key];
+            return (
+              <>
+            <thread>
+            </thread>
+                <td>{avion.id}</td>
+                <td>{avion.departure.id}</td>
+                <td>{avion.destination.id}</td>
+                <td>{avion.departure_date}</td>
+              </>
+            )
+          })}
+            </tbody>
+        </table>
+
     </>
   )
 

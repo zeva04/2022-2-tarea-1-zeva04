@@ -70,7 +70,7 @@ function Connect () {
 
       if (mensaje.type === "plane") {
         const javion = mensaje.plane;
-        setpositions({...positions, [javion.flight_id]: [javion.position.lat, javion.position.long]})
+        setpositions({...positions, [javion.flight_id]: [[javion.position.lat, javion.position.long], [javion.airline.name], [javion.captain], [javion.ETA], [javion.status]]})
         console.log("plane"); 
       }
 
@@ -101,8 +101,8 @@ function Connect () {
   }, [positions]);
 
   //const fillBlueOptions = { fillColor: 'blue' }
-  //const blackOptions = { color: 'black' }
-  //const purpleOptions = { color: 'purple' }
+  const blackOptions = { color: 'black' }
+  const purpleOptions = { color: 'purple' }
   const limeOptions = { color: 'lime' }
   const redOptions = { color: 'red' }
 
@@ -151,13 +151,54 @@ function Connect () {
           
           {/* Aviones*/}
           {Object.keys(positions).map((key) => {
-            const ubi = positions[key];
+            const ubi = positions[key][0];
+            const airline = positions[key][1]
+            const captain = positions[key][2]
+            const ETA = positions[key][3]
+            const status = positions[key][4]
+            
             return (
-              <CircleMarker center={ubi} radius={2} pathOptions={redOptions}>
-                <Popup>
-                  Avion: {key} <br />
-                </Popup>
-              </CircleMarker>
+              <div>
+                {status === "flying" ?
+                  <CircleMarker center={ubi} radius={2} pathOptions={blackOptions}>
+                    <Popup>
+                      Avion: {key} <br />
+                      Airline: {airline} <br />
+                      Captain: {captain} <br />
+                      ETA: {ETA} <br />
+                      Status: {status} <br />
+                    </Popup>
+                  </CircleMarker> : status === "crashed"?
+                  <CircleMarker center={ubi} radius={2} pathOptions={redOptions}>
+                    <Popup>
+                      Avion: {key} <br />
+                      Airline: {airline} <br />
+                      Captain: {captain} <br />
+                      ETA: {ETA} <br />
+                      Status: {status} <br />
+                    </Popup>
+                  </CircleMarker>: status === "landed"?
+                  <CircleMarker center={ubi} radius={2} pathOptions={purpleOptions}>
+                    <Popup>
+                      Avion: {key} <br />
+                      Airline: {airline} <br />
+                      Captain: {captain} <br />
+                      ETA: {ETA} <br />
+                      Status: {status} <br />
+                    </Popup>
+                  </CircleMarker>: 
+                  <CircleMarker center={ubi} radius={2} pathOptions={blackOptions}>
+                  <Popup>
+                    Avion: {key} <br />
+                    Airline: {airline} <br />
+                    Captain: {captain} <br />
+                    ETA: {ETA} <br />
+                    Status: {status} <br />
+                  </Popup>
+                </CircleMarker>
+                  }
+              
+              </div>
             )
           })}
 
